@@ -7,4 +7,4 @@ engine = create_engine(DATABASE_URI, echo=False)
 SessionLocal = sessionmaker(bind=engine)
 
 def init_db():
-    Base.metadata.create_all()
+    Base.metadata.create_all(engine)
