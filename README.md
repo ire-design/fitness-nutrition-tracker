@@ -1,4 +1,3 @@
-# fitness-nutrition-tracker
 # Fitness Nutrition Tracker
 
 A modern Python application for tracking fitness, workouts, and nutrition plans for multiple clients.  
@@ -18,7 +17,7 @@ Includes both a command line tool and a RESTful API for easy use and integration
 
 ---
 
-## 🗂️ Project Structure
+## Project Structure
 
 ```
 ├── app.py              # CLI entrypoint
@@ -35,7 +34,7 @@ Includes both a command line tool and a RESTful API for easy use and integration
 
 ---
 
-## ⚡ Quickstart
+## Quickstart
 
 ### 1. Clone and Setup
 
@@ -96,7 +95,7 @@ _API is Flask-based and returns JSON._
 
 ---
 
-## ⚙️ Technologies Used
+## Technologies Used
 
 - Python 3.8+
 - Flask
