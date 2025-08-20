@@ -1,9 +1,8 @@
 import click
-from colorama import init, Fore
+from colorama import init, Fore, Style
 from db import init_db, SessionLocal
-from models import Client
 from tabulate import tabulate
-from datetime import datetime 
+from datetime import date
 from models import Client, Workout, NutritionPlan
 
 init(autoreset=True)
@@ -15,10 +14,6 @@ def cli():
     pass
 
 @cli.command()
-def init():
-    """Initialize the database"""
-    init_db()
-    click.echo(DARK_GREEN + "Database initialized.")
 @click.option('--name', prompt='Client name')
 @click.option('--age', prompt='Age', type=int)
 @click.option('--gender', prompt='Gender')
@@ -34,18 +29,6 @@ def add_client(name, age, gender, email):
     session.add(client)
     session.commit()
     click.echo(DARK_GREEN + f"Added client {name}!")
-    session.close()
-
-@cli.command()
-def list_clients():
-    """List all clients"""
-    session = SessionLocal()
-    clients = session.query(Client).all()
-    if clients:
-        table = [[c.id, c.name, c.age, c.gender, c.email] for c in clients]
-        click.echo(DARK_GREEN + tabulate(table, headers=["ID", "Name", "Age", "Gender", "Email"], tablefmt="github"))
-    else:
-        click.echo(DARK_GREEN + "No clients found.")
     session.close()
 
 @cli.command()
@@ -106,7 +89,7 @@ def list_workouts(client_id):
 @click.option('--carbs', prompt='Carbs (g)', type=float)
 @click.option('--fats', prompt='Fats (g)', type=float)
 @click.option('--notes', prompt='Notes', default="")
-def add_nutrition_plan(client_id, meal, calories, protein, carbs, fats, notes):
+def add_nutrition(client_id, meal, calories, protein, carbs, fats, notes):
     """Add a nutrition plan for a client"""
     session = SessionLocal()
     client = session.query(Client).filter_by(id=client_id).first()
@@ -114,8 +97,8 @@ def add_nutrition_plan(client_id, meal, calories, protein, carbs, fats, notes):
         click.echo(DARK_GREEN + "Client not found.")
         session.close()
         return
-    nutrition_plan = NutritionPlan(client_id=client_id, date=datetime.today(), meal=meal,
-                                   calories=calories, protein=protein, carbs=carbs, fats=fats, notes=notes)
+    nutrition_plan = NutritionPlan(client_id=client_id, date=date.today(), meal=meal,
+                              calories=calories, protein=protein, carbs=carbs, fats=fats, notes=notes)
     session.add(nutrition_plan)
     session.commit()
     click.echo(DARK_GREEN + f"Nutrition plan for {client.name} added!")
