@@ -13,3 +13,13 @@ class Client(Base):
     workouts = relationship('Workout', back_populates='client')
     nutrition_plans = relationship('NutritionPlan', back_populates='client')
 
+class Workout(Base):
+    __tablename__ = 'workouts'
+    id = Column(Integer, primary_key=True)
+    client_id = Column(Integer, ForeignKey('clients.id'))
+    date = Column(Date)
+    exercise = Column(String(128))
+    duration = Column(Float)  # in minutes
+    calories_burned = Column(Float)
+    notes = Column(Text)
+    client = relationship('Client', back_populates='workouts')
