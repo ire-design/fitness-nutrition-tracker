@@ -2,6 +2,7 @@ import click
 from colorama import init, Fore
 from db import init_db, SessionLocal
 from models import Client
+from tabulate import tabulate
 
 init(autoreset=True)
 DARK_GREEN = Fore.GREEN
@@ -31,4 +32,28 @@ def add_client(name, age, gender, email):
     session.add(client)
     session.commit()
     click.echo(DARK_GREEN + f"Added client {name}!")
+    session.close()
+
+@cli.command()
+def list_clients():
+    """List all clients"""
+    session = SessionLocal()
+    clients = session.query(Client).all()
+    if clients:
+        table = [[c.id, c.name, c.age, c.gender, c.email] for c in clients]
+        click.echo(DARK_GREEN + tabulate(table, headers=["ID", "Name", "Age", "Gender", "Email"], tablefmt="github"))
+    else:
+        click.echo(DARK_GREEN + "No clients found.")
+    session.close()
+
+@cli.command()
+def list_clients():
+    """List all clients"""
+    session = SessionLocal()
+    clients = session.query(Client).all()
+    if clients:
+        table = [[c.id, c.name, c.age, c.gender, c.email] for c in clients]
+        click.echo(DARK_GREEN + tabulate(table, headers=["ID", "Name", "Age", "Gender", "Email"], tablefmt="github"))
+    else:
+        click.echo(DARK_GREEN + "No clients found.")
     session.close()
