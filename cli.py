@@ -4,7 +4,7 @@ from db import init_db, SessionLocal
 from models import Client
 from tabulate import tabulate
 from datetime import datetime 
-from models import Client, Workout
+from models import Client, Workout, NutritionPlan
 
 init(autoreset=True)
 DARK_GREEN = Fore.GREEN
@@ -97,3 +97,27 @@ def list_workouts(client_id):
     else:
         click.echo(DARK_GREEN + "No workouts found.")
     session.close()
+
+@cli.command()
+@click.option('--client_id', prompt='Client ID', type=int)
+@click.option('--meal', prompt='Meal')
+@click.option('--calories', prompt='Calories', type=float)
+@click.option('--protein', prompt='Protein (g)', type=float)
+@click.option('--carbs', prompt='Carbs (g)', type=float)
+@click.option('--fats', prompt='Fats (g)', type=float)
+@click.option('--notes', prompt='Notes', default="")
+def add_nutrition_plan(client_id, meal, calories, protein, carbs, fats, notes):
+    """Add a nutrition plan for a client"""
+    session = SessionLocal()
+    client = session.query(Client).filter_by(id=client_id).first()
+    if not client:
+        click.echo(DARK_GREEN + "Client not found.")
+        session.close()
+        return
+    nutrition_plan = NutritionPlan(client_id=client_id, date=datetime.today(), meal=meal,
+                                   calories=calories, protein=protein, carbs=carbs, fats=fats, notes=notes)
+    session.add(nutrition_plan)
+    session.commit()
+    click.echo(DARK_GREEN + f"Nutrition plan for {client.name} added!")
+    session.close()
+
