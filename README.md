@@ -126,4 +126,5 @@ MIT License
 
 **Developed by [@ire-design](https://github.com/ire-design)**  
 **[Linked-In](https://www.linkedin.com/in/irene-musau/)**  
+**[Email](irenemwikalii04@gmail.com)**  
 
