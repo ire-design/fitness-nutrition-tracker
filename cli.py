@@ -3,6 +3,8 @@ from colorama import init, Fore
 from db import init_db, SessionLocal
 from models import Client
 from tabulate import tabulate
+from datetime import datetime 
+from models import Client, Workout
 
 init(autoreset=True)
 DARK_GREEN = Fore.GREEN
@@ -56,4 +58,25 @@ def list_clients():
         click.echo(DARK_GREEN + tabulate(table, headers=["ID", "Name", "Age", "Gender", "Email"], tablefmt="github"))
     else:
         click.echo(DARK_GREEN + "No clients found.")
+    session.close()
+
+@cli.command()
+@click.option('--client_id', prompt='Client ID', type=int)
+@click.option('--exercise', prompt='Exercise')
+@click.option('--duration', prompt='Duration (min)', type=float)
+@click.option('--calories_burned', prompt='Calories burned', type=float)
+@click.option('--notes', prompt='Notes', default="")
+def add_workout(client_id, exercise, duration, calories_burned, notes):
+    """Add a workout for a client"""
+    session = SessionLocal()
+    client = session.query(Client).filter_by(id=client_id).first()
+    if not client:
+        click.echo(DARK_GREEN + "Client not found.")
+        session.close()
+        return
+    workout = Workout(client_id=client_id, date=date.today(), exercise=exercise,
+                      duration=duration, calories_burned=calories_burned, notes=notes)
+    session.add(workout)
+    session.commit()
+    click.echo(DARK_GREEN + f"Workout for {client.name} added!")
     session.close()
