@@ -14,6 +14,12 @@ def cli():
     pass
 
 @cli.command()
+def init():
+    """Initialize the database"""
+    init_db()
+    click.echo(DARK_GREEN + "Database initialized.")
+    
+@cli.command()
 @click.option('--name', prompt='Client name')
 @click.option('--age', prompt='Age', type=int)
 @click.option('--gender', prompt='Gender')
