@@ -121,3 +121,50 @@ def add_nutrition_plan(client_id, meal, calories, protein, carbs, fats, notes):
     click.echo(DARK_GREEN + f"Nutrition plan for {client.name} added!")
     session.close()
 
+@cli.command()
+@click.option('--client_id', prompt='Client ID', type=int)
+def list_nutrition(client_id):
+    """List all nutrition plans for a client"""
+    session = SessionLocal()
+    plans = session.query(NutritionPlan).filter_by(client_id=client_id).all()
+    if plans:
+        table = [[p.id, p.date, p.meal, p.calories, p.protein, p.carbs, p.fats, p.notes] for p in plans]
+        click.echo(DARK_GREEN + tabulate(
+            table,
+            headers=["ID", "Date", "Meal", "Calories", "Protein", "Carbs", "Fats", "Notes"],
+            tablefmt="github"
+        ))
+    else:
+        click.echo(DARK_GREEN + "No nutrition plans found.")
+    session.close()
+
+@cli.command()
+@click.option('--client_id', prompt='Client ID', type=int)
+def analytics(client_id):
+    """Show analytics for a client (total calories burned and consumed)"""
+    session = SessionLocal()
+    client = session.query(Client).filter_by(id=client_id).first()
+    if not client:
+        click.echo(DARK_GREEN + "Client not found.")
+        session.close()
+        return
+
+    total_burned = session.query(Workout)\
+        .filter_by(client_id=client_id)\
+        .with_entities(Workout.calories_burned)\
+        .all()
+    total_burned = sum([w[0] for w in total_burned])
+
+    total_consumed = session.query(NutritionPlan)\
+        .filter_by(client_id=client_id)\
+        .with_entities(NutritionPlan.calories)\
+        .all()
+    total_consumed = sum([n[0] for n in total_consumed])
+
+    click.echo(
+        DARK_GREEN + f"Analytics for {client.name}:\n"
+        f"Total Calories Burned: {total_burned}\n"
+        f"Total Calories Consumed: {total_consumed}\n"
+        f"Net Calories: {total_consumed - total_burned}"
+    )
+    session.close()
