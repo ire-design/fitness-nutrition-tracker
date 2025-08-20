@@ -1,4 +1,5 @@
-fitness_tracker.db
+venv/
 __pycache__/
+fitness_tracker.db
 .env
 
