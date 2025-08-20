@@ -80,3 +80,20 @@ def add_workout(client_id, exercise, duration, calories_burned, notes):
     session.commit()
     click.echo(DARK_GREEN + f"Workout for {client.name} added!")
     session.close()
+
+@cli.command()
+@click.option('--client_id', prompt='Client ID', type=int)
+def list_workouts(client_id):
+    """List all workouts for a client"""
+    session = SessionLocal()
+    workouts = session.query(Workout).filter_by(client_id=client_id).all()
+    if workouts:
+        table = [[w.id, w.date, w.exercise, w.duration, w.calories_burned, w.notes] for w in workouts]
+        click.echo(DARK_GREEN + tabulate(
+            table,
+            headers=["ID", "Date", "Exercise", "Duration", "Calories Burned", "Notes"],
+            tablefmt="github"
+        ))
+    else:
+        click.echo(DARK_GREEN + "No workouts found.")
+    session.close()
