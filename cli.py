@@ -168,3 +168,6 @@ def analytics(client_id):
         f"Net Calories: {total_consumed - total_burned}"
     )
     session.close()
+
+if __name__ == '__main__':
+    cli()
