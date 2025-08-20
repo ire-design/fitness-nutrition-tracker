@@ -1,6 +1,7 @@
 import click
 from colorama import init, Fore
-from db import init_db
+from db import init_db, SessionLocal
+from models import Client
 
 init(autoreset=True)
 DARK_GREEN = Fore.GREEN
