@@ -23,3 +23,16 @@ class Workout(Base):
     calories_burned = Column(Float)
     notes = Column(Text)
     client = relationship('Client', back_populates='workouts')
+
+class NutritionPlan(Base):
+    __tablename__ = 'nutrition_plans'
+    id = Column(Integer, primary_key=True)
+    client_id = Column(Integer, ForeignKey('clients.id'))
+    date = Column(Date)
+    meal = Column(String(128))
+    calories = Column(Float)
+    protein = Column(Float)
+    carbs = Column(Float)
+    fats = Column(Float)
+    notes = Column(Text)
+    client = relationship('Client', back_populates='nutrition_plans')
